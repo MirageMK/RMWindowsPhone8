@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Media.Animation;
 
 namespace RMWindowsPhone8.ViewModels
 {
+    [Table]
     public class GroupViewModel : INotifyPropertyChanged
     {//"key":"group1","subtitle":"You so want one.","title":"Burgers & Sandwiches"}
         private string _id;
@@ -18,6 +20,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used to identify the object.
         /// </summary>
         /// <returns></returns>
+        [Column(IsPrimaryKey = true, CanBeNull = false)]
         public string ID
         {
             get
@@ -28,6 +31,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _id)
                 {
+                    NotifyPropertyChanging("ID");
                     _id = value;
                     NotifyPropertyChanged("ID");
                 }
@@ -39,6 +43,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
+        [Column]
         public string backgroundImage
         {
             get
@@ -49,6 +54,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _backgroundImage)
                 {
+                    NotifyPropertyChanging("backgroundImage");
                     _backgroundImage = value;
                     NotifyPropertyChanged("backgroundImage");
                 }
@@ -60,6 +66,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
+        [Column]
         public string description
         {
             get
@@ -70,6 +77,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _description)
                 {
+                    NotifyPropertyChanging("description");
                     _description = value;
                     NotifyPropertyChanged("description");
                 }
@@ -81,6 +89,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
+        [Column]
         public string key
         {
             get
@@ -91,6 +100,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _key)
                 {
+                    NotifyPropertyChanging("key");
                     _key = value;
                     NotifyPropertyChanged("key");
                 }
@@ -102,6 +112,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
+        [Column]
         public string subtitle
         {
             get
@@ -112,6 +123,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _subtitle)
                 {
+                    NotifyPropertyChanging("subtitle");
                     _subtitle = value;
                     NotifyPropertyChanged("subtitle");
                 }
@@ -123,6 +135,7 @@ namespace RMWindowsPhone8.ViewModels
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
+        [Column]
         public string title
         {
             get
@@ -133,6 +146,7 @@ namespace RMWindowsPhone8.ViewModels
             {
                 if (value != _title)
                 {
+                    NotifyPropertyChanging("title");
                     _title = value;
                     NotifyPropertyChanged("title");
                 }
@@ -146,6 +160,16 @@ namespace RMWindowsPhone8.ViewModels
             if (null != handler)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            PropertyChangingEventHandler handler = PropertyChanging;
+            if (null != handler)
+            {
+                handler(this, new PropertyChangingEventArgs(propertyName));
             }
         }
     }

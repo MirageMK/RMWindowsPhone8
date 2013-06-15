@@ -33,10 +33,10 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding backgroundImage}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"/>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding subtitle}"/>
+                            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding subtitle}" Margin="12"/>
+                            <Image Grid.Column="1" Source="{Binding backgroundImage}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"/>
                         </Grid>
                         <phone:LongListSelector Grid.Row="1" x:Name="GroupLongListSelector" Margin="0,0,-12,0">
                         </phone:LongListSelector>

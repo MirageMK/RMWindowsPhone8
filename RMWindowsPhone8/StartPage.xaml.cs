@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using RMWindowsPhone8.Resources;
 using RMWindowsPhone8.ViewModels;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace RMWindowsPhone8
 {
@@ -31,7 +32,14 @@ namespace RMWindowsPhone8
         {
             if (!App.ViewModel.IsDataLoaded)
             {
-                App.ViewModel.LoadData();
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    App.ViewModel.LoadDataFromWS();
+                }
+                else
+                {
+                    App.ViewModel.LoadDataFromDB();
+                }
             }
         }
 

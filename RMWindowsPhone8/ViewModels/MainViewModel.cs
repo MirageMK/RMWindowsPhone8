@@ -6,7 +6,11 @@ using System.Net;
 using System.IO;
 using System.Text;
 using System.Runtime.Serialization.Json;
+using System.Linq;
 using Newtonsoft.Json;
+using Microsoft.Phone.Shell;
+using RMWindowsPhone8.Database;
+using System.Collections.Generic;
 
 namespace RMWindowsPhone8.ViewModels
 {
@@ -19,10 +23,26 @@ namespace RMWindowsPhone8.ViewModels
             this.Groups = new ObservableCollection<GroupViewModel>();
         }
 
+
+        public ObservableCollection<GroupViewModel> _groups;
         /// <summary>
         /// A collection for GroupViewModel objects.
         /// </summary>
-        public ObservableCollection<GroupViewModel> Groups { get; private set; }
+        public ObservableCollection<GroupViewModel> Groups
+        {
+            get
+            {
+                return _groups;
+            }
+            set
+            {
+                if (value != _groups)
+                {
+                    _groups = value;
+                    NotifyPropertyChanged("Groups");
+                }
+            }
+        }
 
         private string _sampleProperty = "Sample Runtime Property Value";
         /// <summary>
@@ -65,13 +85,24 @@ namespace RMWindowsPhone8.ViewModels
         /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
         /// </summary>
-        public void LoadData()
+        public void LoadDataFromWS()
         {
+            SystemTray.ProgressIndicator.Text = "Downloading data form web service...";
             var client = new WebClient();
             client.DownloadStringCompleted += client_DownloadStringCompleted;
             client.DownloadStringAsync(new Uri(webServiceURL));
+        }
 
-            // Sample data; replace with real data
+        public void LoadDataFromDB()
+        {
+            SystemTray.ProgressIndicator.Text = "Downloading data form database...";
+            using (DatabaseDataContext DBDC = new DatabaseDataContext(DatabaseDataContext.DBConnectionString))
+            {
+                var query = from g in DBDC.groups select g;
+                this.Groups = new ObservableCollection<GroupViewModel>(query);
+            }
+            this.IsDataLoaded = true;
+            SystemTray.ProgressIndicator.IsVisible = false;
         }
 
         void client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -85,25 +116,49 @@ namespace RMWindowsPhone8.ViewModels
                 this.Groups.Add(b);
             }
 
-
-            //this.Groups.Add(new GroupViewModel() { ID = textData, LineOne = textData, LineTwo = textData, LineThree = textData });
-            //this.Groups.Add(new GroupViewModel() { ID = "1", LineOne = "runtime two", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus" });
-            //this.Groups.Add(new GroupViewModel() { ID = "2", LineOne = "runtime three", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent" });
-            //this.Groups.Add(new GroupViewModel() { ID = "3", LineOne = "runtime four", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos" });
-            //this.Groups.Add(new GroupViewModel() { ID = "4", LineOne = "runtime five", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur" });
-            //this.Groups.Add(new GroupViewModel() { ID = "5", LineOne = "runtime six", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent" });
-            //this.Groups.Add(new GroupViewModel() { ID = "6", LineOne = "runtime seven", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat" });
-            //this.Groups.Add(new GroupViewModel() { ID = "7", LineOne = "runtime eight", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum" });
-            //this.Groups.Add(new GroupViewModel() { ID = "8", LineOne = "runtime nine", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu" });
-            //this.Groups.Add(new GroupViewModel() { ID = "9", LineOne = "runtime ten", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus" });
-            //this.Groups.Add(new GroupViewModel() { ID = "10", LineOne = "runtime eleven", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent" });
-            //this.Groups.Add(new GroupViewModel() { ID = "11", LineOne = "runtime twelve", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos" });
-            //this.Groups.Add(new GroupViewModel() { ID = "12", LineOne = "runtime thirteen", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur" });
-            //this.Groups.Add(new GroupViewModel() { ID = "13", LineOne = "runtime fourteen", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent" });
-            //this.Groups.Add(new GroupViewModel() { ID = "14", LineOne = "runtime fifteen", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat" });
-            //this.Groups.Add(new GroupViewModel() { ID = "15", LineOne = "runtime sixteen", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum" });
-
             this.IsDataLoaded = true;
+            SystemTray.ProgressIndicator.IsVisible = false;
+            RefreshDB();
+        }
+
+        public void InsertGroup(GroupViewModel groupToInsert)
+        {
+            using (DatabaseDataContext DBDC = new DatabaseDataContext(DatabaseDataContext.DBConnectionString))
+            {
+                DBDC.groups.InsertOnSubmit(groupToInsert);
+                DBDC.SubmitChanges();
+            }
+        }
+
+        public void DeleteGroup(GroupViewModel groupToDelete)
+        {
+            this.Groups.Remove(groupToDelete);
+            using (DatabaseDataContext DBDC = new DatabaseDataContext(DatabaseDataContext.DBConnectionString))
+            {
+                IQueryable<GroupViewModel> seriequery = from g in DBDC.groups where g.ID == groupToDelete.ID select g;
+                GroupViewModel returnedGroup = seriequery.FirstOrDefault();
+                DBDC.groups.DeleteOnSubmit(returnedGroup);
+                DBDC.SubmitChanges();
+            }
+        }
+
+        public void DeleteAllGroups()
+        {
+            using (DatabaseDataContext DBDC = new DatabaseDataContext(DatabaseDataContext.DBConnectionString))
+            {
+                IEnumerable<GroupViewModel> groups = (from g in DBDC.groups select g).ToList();
+                DBDC.groups.DeleteAllOnSubmit(groups);
+                DBDC.SubmitChanges();
+            }
+        }
+
+        public void RefreshDB()
+        {
+            DeleteAllGroups();
+            foreach (GroupViewModel group in this.Groups)
+            {
+                InsertGroup(group);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
