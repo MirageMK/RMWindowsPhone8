@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
@@ -10,8 +11,8 @@ using System.Windows.Media.Animation;
 
 namespace RMWindowsPhone8.ViewModels
 {
-    public class ItemViewModel : INotifyPropertyChanged
-    {
+    public class GroupViewModel : INotifyPropertyChanged
+    {//"key":"group1","subtitle":"You so want one.","title":"Burgers & Sandwiches"}
         private string _id;
         /// <summary>
         /// Sample ViewModel property; this property is used to identify the object.
@@ -33,65 +34,107 @@ namespace RMWindowsPhone8.ViewModels
             }
         }
 
-        private string _lineOne;
+        private string _backgroundImage;
         /// <summary>
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
-        public string LineOne
+        public string backgroundImage
         {
             get
             {
-                return _lineOne;
+                return _backgroundImage;
             }
             set
             {
-                if (value != _lineOne)
+                if (value != _backgroundImage)
                 {
-                    _lineOne = value;
-                    NotifyPropertyChanged("LineOne");
+                    _backgroundImage = value;
+                    NotifyPropertyChanged("backgroundImage");
                 }
             }
         }
 
-        private string _lineTwo;
+        private string _description;
         /// <summary>
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
-        public string LineTwo
+        public string description
         {
             get
             {
-                return _lineTwo;
+                return _description;
             }
             set
             {
-                if (value != _lineTwo)
+                if (value != _description)
                 {
-                    _lineTwo = value;
-                    NotifyPropertyChanged("LineTwo");
+                    _description = value;
+                    NotifyPropertyChanged("description");
                 }
             }
         }
 
-        private string _lineThree;
+        private string _key;
         /// <summary>
         /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
         /// </summary>
         /// <returns></returns>
-        public string LineThree
+        public string key
         {
             get
             {
-                return _lineThree;
+                return _key;
             }
             set
             {
-                if (value != _lineThree)
+                if (value != _key)
                 {
-                    _lineThree = value;
-                    NotifyPropertyChanged("LineThree");
+                    _key = value;
+                    NotifyPropertyChanged("key");
+                }
+            }
+        }
+
+        private string _subtitle;
+        /// <summary>
+        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
+        /// </summary>
+        /// <returns></returns>
+        public string subtitle
+        {
+            get
+            {
+                return _subtitle;
+            }
+            set
+            {
+                if (value != _subtitle)
+                {
+                    _subtitle = value;
+                    NotifyPropertyChanged("subtitle");
+                }
+            }
+        }
+
+        private string _title;
+        /// <summary>
+        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
+        /// </summary>
+        /// <returns></returns>
+        public string title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                if (value != _title)
+                {
+                    _title = value;
+                    NotifyPropertyChanged("title");
                 }
             }
         }
@@ -105,5 +148,10 @@ namespace RMWindowsPhone8.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+    }
+
+    public class RootObject
+    {
+        public List<GroupViewModel> getAllGroupsResult { get; set; }
     }
 }
