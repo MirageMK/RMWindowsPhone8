@@ -57,6 +57,11 @@ namespace RMWindowsPhone8
             MainLongListSelector.SelectedItem = null;
         }
 
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/LocateMePage.xaml",UriKind.Relative));
+        }
+
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()
         //{
