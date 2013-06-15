@@ -8,32 +8,45 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using RMWindowsPhone8.Resources;
+using RMWindowsPhone8.ViewModels;
 
 namespace RMWindowsPhone8
 {
-    public partial class DetailsPage : PhoneApplicationPage
+    public partial class StartPage : PhoneApplicationPage
     {
         // Constructor
-        public DetailsPage()
+        public StartPage()
         {
             InitializeComponent();
+
+            // Set the data context of the LongListSelector control to the sample data
+            DataContext = App.ViewModel;
 
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
 
-        // When page is navigated to set data context to selected item in list
+        // Load data for the ViewModel Items
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (DataContext == null)
+            if (!App.ViewModel.IsDataLoaded)
             {
-                string selectedIndex = "";
-                if (NavigationContext.QueryString.TryGetValue("selectedItem", out selectedIndex))
-                {
-                    int index = int.Parse(selectedIndex);
-                    DataContext = App.ViewModel.Groups[index];
-                }
+                App.ViewModel.LoadData();
             }
+        }
+
+        // Handle selection changed on LongListSelector
+        private void MainLongListSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // If selected item is null (no selection) do nothing
+            if (MainLongListSelector.SelectedItem == null)
+                return;
+
+            // Navigate to the new page
+            NavigationService.Navigate(new Uri("/GroupPage.xaml?selectedItem=" + (MainLongListSelector.SelectedItem as GroupViewModel).ID, UriKind.Relative));
+
+            // Reset selected item to null (no selection)
+            MainLongListSelector.SelectedItem = null;
         }
 
         // Sample code for building a localized ApplicationBar
